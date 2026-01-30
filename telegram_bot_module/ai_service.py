@@ -2,6 +2,7 @@ from Free_API_Load_balancer import generate
 from enum import Enum as ENUM
 import re
 from enum import Enum
+from utils_handlers_groups import UtilsHandlersGroups
 
 class SenderList(Enum):
     JOBS_AND_INTERNSHIPS = "Jobs and Internships"
@@ -53,25 +54,28 @@ class AIService:
         
     def refine_posts(self, posts):
         refined = []
-
+        handler=UtilsHandlersGroups()
         for post in posts:
-            
 
-            # apply rules only for jobs_and_internships_updates
-            print(post.source)
             if post and post.source == SenderList.JOBS_AND_INTERNSHIPS.value:
-                post.text = self.handle_source_1(post.text)
-
+                post.text = handler.handle_source_1(post.text)
                 if not post.text:
                     continue
             elif post and post.source == SenderList.INTERN_FREAK.value:
-                post.text = self.handle_source_2(post.text)
+                post.text = handler.handle_source_2(post.text)
+
+            elif post and post.source == SenderList.TORCHBEARER.value:
+                post.text = handler.handle_source_3(post.text)
+
             elif post and post.source == SenderList.TECH_UPRISE.value:
                 post.text = post.text
+            
             elif post and post.source == SenderList.GO_CAREERS.value:
                 post.text = post.text    
+            
             elif post and post.source == SenderList.JOBS_AND_INTERNSHIPS_1.value:
                 post.text = post.text       
+            
             refined.append(post)
 
         return refined
