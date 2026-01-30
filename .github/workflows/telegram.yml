@@ -44,3 +44,18 @@ jobs:
           TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
         run: |
           python run_once.py
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push fetch_log update
+        run: |
+          if git diff --quiet telegram_bot_module/fetch_log.json; then
+            echo "No changes to fetch_log.json"
+          else
+            git add telegram_bot_module/fetch_log.json
+            git commit -m "Update fetch_log.json - Bot run at $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+            git push origin HEAD:${{ github.ref }}
+          fi
