@@ -66,6 +66,13 @@ class AIService:
 
             elif post and post.source == SenderList.TORCHBEARER.value:
                 post.text = handler.handle_source_3(post.text)
+                
+            elif post and post.source == SenderList.DOT_AWARE.value:
+                post.text = handler.handle_source_4(post.text)
+            
+            elif post and post.source == SenderList.OFF_CAMPUS_JOBS_AND_INTERNSHIPS.value:
+                post.text = handler.handle_source_5(post.text)
+
 
             elif post and post.source == SenderList.TECH_UPRISE.value:
                 post.text = post.text

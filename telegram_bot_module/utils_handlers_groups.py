@@ -6,6 +6,7 @@ class UtilsHandlersGroups:
         if not text:
             return ""
 
+        # ❌ LinkedIn algorithm / engagement bait
         if re.search(
             r"Do like the post for LinkedIn Algorithm",
             text,
@@ -13,6 +14,7 @@ class UtilsHandlersGroups:
         ):
             return ""
 
+        # ❌ WhatsApp promotions
         if re.search(
             r"https?://(www\.)?whatsapp\.com/\S+",
             text,
@@ -20,8 +22,25 @@ class UtilsHandlersGroups:
         ):
             return ""
 
+        # ❌ LinkedIn profile follow / connect posts
+        if re.search(
+            r"You can follow me on LinkedIn|linkedin\.com/in/",
+            text,
+            flags=re.IGNORECASE
+        ):
+            return ""
+
+        # ❌ Awareness / initiative / tagging placement cells (not jobs)
+        if re.search(
+            r"An initiative to help|Do Tag your College Placement Cells|Placement Cell|TPO",
+            text,
+            flags=re.IGNORECASE
+        ):
+            return ""
+
         cleaned = text
 
+        # Remove community footer
         cleaned = re.sub(
             r"Community for Jobs\s*&\s*Internships Updates:\s*https?://\S+",
             "",
@@ -29,10 +48,11 @@ class UtilsHandlersGroups:
             flags=re.IGNORECASE
         )
 
-        # ✅ Normalize spacing
+        # Normalize spacing
         cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
 
         return cleaned
+
 
     def handle_source_2(self, text: str) -> str:
         if not text:
@@ -64,3 +84,91 @@ class UtilsHandlersGroups:
         cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
 
         return cleaned
+    
+    def handle_source_4(self, text: str) -> str:
+        if not text:
+            return ""
+
+        cleaned = text
+
+        # Remove WhatsApp links
+        cleaned = re.sub(
+            r"https?://(www\.)?whatsapp\.com/\S+",
+            "",
+            cleaned,
+            flags=re.IGNORECASE
+        )
+
+        # Remove AccioJob links
+        cleaned = re.sub(
+            r"https?://go\.acciojob\.com/\S+",
+            "",
+            cleaned,
+            flags=re.IGNORECASE
+        )
+
+        # Remove AccioJob promo text
+        cleaned = re.sub(
+            r"₹\s*\d+LPA\s*to\s*₹\s*\d+LPA.*?Register\s*free:?(\s*)",
+            "",
+            cleaned,
+            flags=re.IGNORECASE
+        )
+
+        # Remove standalone WhatsApp Channel line
+        cleaned = re.sub(
+            r"WhatsApp\s*Channel\s*-?\s*",
+            "",
+            cleaned,
+            flags=re.IGNORECASE
+        )
+
+        # Normalize spacing
+        cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+
+        return cleaned
+    
+
+    def handle_source_5(self, text: str) -> str:
+        if not text:
+            return ""
+
+        # ❌ Remove entire post if PlacementLelo links exist (apply/register/hackathons)
+        if re.search(
+            r"https?://(www\.)?placementlelo\.in/\S+",
+            text,
+            flags=re.IGNORECASE
+        ):
+            return ""
+
+        # ❌ Remove entire post if resume builder / resume promo exists
+        if re.search(
+            r"resume\s*(builder|enhancer)|resume\s*tool|resume\s*link|bit\.ly/\S+",
+            text,
+            flags=re.IGNORECASE
+        ):
+            return ""
+
+        cleaned = text
+
+        # ❌ Remove Telegram links only (keep post otherwise)
+        cleaned = re.sub(
+            r"Telegram\s*:\s*https?://(t\.me|telegram\.me)/\S+",
+            "",
+            cleaned,
+            flags=re.IGNORECASE
+        )
+
+        # ❌ Remove WhatsApp links always
+        cleaned = re.sub(
+            r"https?://(www\.)?whatsapp\.com/\S+",
+            "",
+            cleaned,
+            flags=re.IGNORECASE
+        )
+
+        # Normalize spacing
+        cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+
+        return cleaned
+
