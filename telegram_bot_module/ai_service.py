@@ -76,7 +76,7 @@ class AIService:
 
 
             elif post and post.source == SenderList.TECH_UPRISE.value:
-                post.text = post.text
+                post.text = handler.handle_source_7(post.text)
             
             elif post and post.source == SenderList.GO_CAREERS.value:
                 post.text = post.text    
