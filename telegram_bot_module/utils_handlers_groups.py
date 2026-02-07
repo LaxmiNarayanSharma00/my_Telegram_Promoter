@@ -172,3 +172,49 @@ class UtilsHandlersGroups:
 
         return cleaned
 
+    def handle_source_6(self, text: str) -> str:
+        if not text:
+            return ""
+
+        cleaned = text
+
+        # ❌ Remove Telegram invite/channel links (including your specific one)
+        cleaned = re.sub(
+            r"https?://(t\.me|telegram\.me)/join_Daily_Jobs_Placement_Update\S*",
+            "",
+            cleaned,
+            flags=re.IGNORECASE
+        )
+
+        # ❌ Remove lines like "Telegram link 👇👇"
+        cleaned = re.sub(
+            r"Telegram\s*link\s*👇+",
+            "",
+            cleaned,
+            flags=re.IGNORECASE
+        )
+
+        # Normalize spacing
+        cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+
+        return cleaned
+
+
+    def handle_source_7(self, text: str) -> str:
+        if not text:
+            return ""
+
+        cleaned = text
+
+        # ❌ Remove "Access Referral Sheet" line (with or without extra spaces)
+        cleaned = re.sub(
+            r"^\s*Access\s*Referral\s*Sheet\s*$",
+            "",
+            cleaned,
+            flags=re.IGNORECASE | re.MULTILINE
+        )
+
+        # Normalize spacing
+        cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+
+        return cleaned
