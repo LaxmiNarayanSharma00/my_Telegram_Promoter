@@ -228,7 +228,7 @@ class UtilsHandlersGroups:
 
         # ❌ Remove "*Join for more:* @TechJobUpdatesDaily"
         cleaned = re.sub(
-            r"^\s*\*?\s*Join\s*for\s*more\s*:\s*\*?\s*@\w+\s*$",
+            r"^.*\bJoin\s+for\s+more\b.*$",
             "",
             cleaned,
             flags=re.IGNORECASE | re.MULTILINE
