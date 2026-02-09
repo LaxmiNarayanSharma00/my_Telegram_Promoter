@@ -1,0 +1,34 @@
+levels:
+  level_0:
+    message: "hey are you looking for placements or internships??"
+    
+  level_2:
+    messages:
+      - "i have some emails you can use they are hiring currently"
+    
+  level_4:
+    messages:
+      - "sending just 1 min"
+      - "[EMAIL_XLSX]"
+      - "while cold mailing just remember to have one deployed project"
+      - "also if you want than join this group here my friend daily post job updates and hr contacts links https://t.me/Jobs_Lelo"
+    
+  level_5:
+    message: "While applying the job updates try to contact me if possible I will provide the referral through my contact"
+
+categorization_prompt: |
+  Analyze this user message and determine if they are looking for job placements/internships.
+  Respond with only "yes" or "no".
+  Context: This message is from a Telegram jobs group.
+  Message: {message}
+
+response_prompts:
+  level_1: |
+    Determine whether the user's reply indicates they are looking for placements or internships.
+    Reply with only one of: yes, no, or unclear.
+    User reply: {message}
+
+  level_3: |
+    Determine whether the user's reply is a request for the contact/emails (i.e. asking you to send the hiring contacts).
+    Reply with only one of: yes, no, or unclear.
+    User reply: {message}

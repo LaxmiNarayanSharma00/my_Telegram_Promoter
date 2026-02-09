@@ -1,0 +1,11 @@
+extraction:
+  frequency_days: 2
+  groups:
+    - username: "@my_promotions"
+      name: "my_promotions"
+ 
+
+dm_limits:
+  max_per_day: 1
+
+promotion_channel: "Jobs_Lelo"
