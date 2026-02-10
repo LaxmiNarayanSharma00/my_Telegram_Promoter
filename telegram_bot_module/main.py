@@ -70,7 +70,7 @@ class TelegramBot:
             #         f.write(refined.text + "\n")
             #         f.write("-" * 40 + "\n")
 
-            await self.distributor_channels.send_posts()
+            # await self.distributor_channels.send_posts()
 
             if posts:
                 await self.distributor.send_posts(refined_posts)
