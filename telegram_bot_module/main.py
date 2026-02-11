@@ -78,7 +78,7 @@ class TelegramBot:
             #     self.logger.info("No posts to distribute")
             
             await self.dm_promotion_service.run()
-            # await self.group_promotion_service.run()
+            await self.group_promotion_service.run()
             
             return True
         finally:

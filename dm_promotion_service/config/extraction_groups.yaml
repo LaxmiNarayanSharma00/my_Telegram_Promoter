@@ -1,11 +1,12 @@
 extraction:
-  frequency_days: 1
+  frequency_days: 2
   groups:
-    - username: "@my_promotions"
-      name: "My Promotions"
-    # - username: "@codechef_answers"
-    #   name: "My Promotions"
 
+    - username: "@codechef_answers"
+      name: "My Promotions"
+
+    # - username: "@my_promotions"
+    #   name: "My Promotions"
     # - username: "@leetcode_answers"
     #   name: "LeetCode Answers"
 
