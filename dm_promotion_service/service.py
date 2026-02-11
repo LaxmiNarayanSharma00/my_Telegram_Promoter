@@ -25,7 +25,7 @@ class DMPromotionService:
         self.logger.info("Starting DM Promotion Service")
         
         should_extract = self._should_extract()
-        
+        self.logger.info(f"should_extract={should_extract}")
         if should_extract:
             self.logger.info("Running user extraction and categorization")
             await self.group_extractor.extract_and_categorize()
@@ -39,11 +39,11 @@ class DMPromotionService:
     def _should_extract(self) -> bool:
         """Check if enough time has passed for another extraction"""
         extraction_log = Path(__file__).parent / "data" / "extraction_log.txt"
-        
+        self.logger.info(f"extraction_log={extraction_log}")
         if not extraction_log.exists():
             extraction_log.write_text(datetime.now(timezone.utc).isoformat())
             return True
-        
+        self.logger.info(f"extraction_log={extraction_log}")
         try:
             last_time = extraction_log.read_text().strip()
             
