@@ -111,6 +111,7 @@ class TrustBuilder:
     async def _add_reaction(self, entity: str, message_id: int, emoji: str) -> bool:
         """Add emoji reaction to message"""
         client = self.client_manager.get_client()
+        # print(f"Adding reaction {emoji} to message {message_id} in {entity}")
         try:
             await client(functions.messages.SendReactionRequest(
             peer=entity,

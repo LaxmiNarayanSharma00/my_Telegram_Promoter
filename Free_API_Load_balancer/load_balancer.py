@@ -3,7 +3,7 @@ from pathlib import Path
 import yaml
 from datetime import datetime, timedelta
 from .model_provider import ProviderRegistry
-
+import os
 BASE_DIR = Path(__file__).resolve().parent
 LIMITS_FILE = BASE_DIR / "Limits.xlsx"
 CONFIG_FILE = BASE_DIR / "config.yaml"
@@ -47,6 +47,17 @@ class LoadBalancer:
                 pass  # Skip if Last_Reset is invalid; will be set on next update
 
     def start(self, text: str, max_output_tokens: int):
+                # Try env variable first (GitHub Actions)
+        env_key_name = self.config['users'][user_email][platform_name].get('env_key')
+
+        if env_key_name:
+            api_key = os.getenv(env_key_name)
+
+        # Fallback to YAML (local development)
+        if not api_key:
+            api_key = self.config['users'][user_email][platform_name]['api_keys'][0]['key']
+
+
         data=self.get_next_endpoint(text, max_output_tokens)
         if data is None:
                 raise Exception("No available API endpoint meets the criteria.")

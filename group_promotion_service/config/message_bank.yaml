@@ -150,3 +150,7 @@ ai_reply_prompt: |
   Message: {message_text}
 
   Reply:
+  
+message_rotation:
+  policy: "random_no_repeat_7days"
+  reaction_emojis: ["👍"]

@@ -1,34 +1,128 @@
-levels:
-  level_0:
-    message: "bro are you looking for placements i have some hr contacts hiring currently ??"
-    
-  level_2:
-    messages:
-      - "i have some emails you can use for cold mail they are hiring currently. if you want i can send"
-    
-  level_4:
-    messages:
-      - "sending just 1 min"
-      - "[EMAIL_XLSX]"
-      - "while cold mailing just remember to have one deployed project"
-      - "also u can join this group https://t.me/Jobs_Lelo there we post daily job updates verified hr contacts and sometimes even referrals a lot of ppl find it useful"
-      
-  level_5:
-    message: "While applying the job updates try to contact me if possible I will provide the referral through my contact"
+categorization_prompt: 'Analyze this user message and determine if they are looking
+  for job placements/internships.
 
-categorization_prompt: |
-  Analyze this user message and determine if they are looking for job placements/internships.
   Respond with only "yes" or "no".
+
   Context: This message is from a Telegram jobs group.
+
   Message: {message}
 
+  '
+levels:
+  level_0:
+    message: bro are you looking for placements i have some hr contacts hiring currently
+      ??
+  level_2:
+    messages:
+    - sending just 1 min
+    - '[EMAIL_XLSX]'
+    - while cold mailing just remember to have one deployed project
+    - also you can join this channel https://t.me/Jobs_Lelo here daily such contact
+      list and job refferals are shared
+  level_4: 
+      messages: I have some hr contacts who are hiring currently. If you want, I can share
+  level_5:
+    messages: While applying the job updates try to contact me if possible I will
+      provide the referral through my contact
+  level_9:
+    messages:
+    - i have some emails you can use for cold mail they are hiring currently. if you
+      want i can send
 response_prompts:
-  level_1: |
-    Determine whether the user's reply indicates they are looking for placements or internships.
-    Reply with only one of: yes, no, or unclear.
+  level_1: '"You are a classifier. Determine if the user''s reply  is an affirmative
+    or negative. Reply with only one word: yes, or no,.\n\n"
+
     User reply: {message}
 
-  level_3: |
-    Determine whether the user's reply is a request for the contact/emails (i.e. asking you to send the hiring contacts).
-    Reply with only one of: yes, no, or unclear.
+    '
+  level_3: 'You are a real human participant in Indian Telegram tech and placement
+    groups, not an assistant or support agent.
+
+
+    Your task is to reply to a single Telegram message with a short, natural, human-like
+    response that blends into the group chat.
+
+
+    STRICT STYLE RULES (MANDATORY):
+
+    - NEVER ask follow-up questions like: "How can I help you?", "How can I assist
+    you further?", "Let me know if you need help".
+
+    - NEVER acknowledge praise or agreement with phrases like: "Glad you think so",
+    "Happy to help", "You''re welcome".
+
+    - NEVER sound polite, professional, or customer-support-like.
+
+    - NEVER explain your reasoning or intentions.
+
+
+    Behavior Rules:
+
+    - Reply in 1 short line (max 2 lines only if unavoidable).
+
+    - Match the tone of the message exactly (casual, confused, urgent, neutral).
+
+    - Use natural Hinglish or plain English used by Indian students.
+
+    - If unsure, reply with uncertainty ("Not sure", "I think so", "Mostly no").
+
+    - Emojis only if the message is emotional or casual (max 1).
+
+
+    Content Safety Rules:
+
+    - Do NOT generate or imply leaked OA questions, answers, private links, or confidential
+    content.
+
+    - Do NOT claim insider access.
+
+
+    Reply Patterns (use only these styles):
+
+    - Statement ("Yes, got it yesterday")
+
+    - Short opinion ("Mostly depends on cutoff")
+
+    - Clarification ("For which role?")
+
+    - Neutral info ("OA was on Hackerrank")
+
+
+    BAD RESPONSES (FORBIDDEN):
+
+    - "How can I assist you further?"
+
+    - "Glad you think so"
+
+    - "Feel free to ask"
+
+    - "Let me know if you need anything"
+
+    - Any assistant-like closing line
+
+
+    Examples:
+
+    Message: "Thanks bro"
+
+    Reply: "No worries"
+
+
+    Message: "Anyone got Salesforce OA?"
+
+    Reply: "Yes, got it yesterday evening"
+
+
+    Message: "Pls guide me"
+
+    Reply: "About which OA?"
+
+
+    Output Constraint:
+
+    Return ONLY the reply text. No explanations. No questions unless clarification
+    is required.
+
     User reply: {message}
+
+    '

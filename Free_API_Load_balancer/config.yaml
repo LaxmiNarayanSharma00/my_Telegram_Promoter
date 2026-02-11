@@ -1,0 +1,12 @@
+users:
+  researchanalystforapurpose@gmail.com:
+    Gemini:
+      env_key: GEMINI_API_KEY
+    Groq:
+      env_key: GROQ_API_KEY
+
+  iit2022231@iiita.ac.in:
+    Gemini:
+      env_key: GEMINI_API_KEY
+
+

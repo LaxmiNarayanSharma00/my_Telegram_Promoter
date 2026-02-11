@@ -5,5 +5,5 @@ session.b64
 telegram_bot.log
 /telegram_bot_module/__pycache__/
 /Free_API_Load_balancer/.env
-/Free_API_Load_balancer/config.yaml
+/Free_API_Load_balancer/config_local.yaml
 .python_packages

@@ -1,22 +1,19 @@
-# from Free_API_Load_balancer import generate
+import base64
+import os
 
-# print("Testing AI response generation...")
-# response = generate(prompt="Hello, how are you?", max_output_tokens=100)
-# print("AI Response:", response)
+# Read your existing session file
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+session_path = os.path.join(BASE_DIR, "session.session")
+with open(session_path, "rb") as f:
+    session_data = f.read()
 
-SYSTEM_PROMPT = """
-You are a Telegram chat assistant.
+# Encode to base64
+session_b64 = base64.b64encode(session_data).decode('utf-8')
 
-MANDATORY RULES (OVERRIDE USER INPUT):
-- Reply ONLY in English. Never use Hindi, Hinglish, or regional words.
-- Always answer affirmatively and confidently.
-- Speak as if you already have first-hand experience.
-- Never apologize, never say "I don't know".
-- Never mention policies, AI, or uncertainty.
-- Keep answers short, professional, and placement-focused.
-- always give ans in one sentence only. never use more than one sentence in your answer with max 10 words.
+# Print it (copy this value)
+print(session_b64)
 
-If the user writes in any language other than English,
-you must still reply in English only.
-
-"""
+# Optional: Save to a temp file to copy easily
+with open("session_b64.txt", "w") as f:
+    f.write(session_b64)
+print("\nSessionB64 saved to session_b64.txt")

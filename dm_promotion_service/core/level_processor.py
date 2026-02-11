@@ -1,14 +1,17 @@
 import logging
 import asyncio
 from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from typing import Dict
 from .user_manager import UserManager
 from .conversation_handler import ConversationHandler
 from .response_analyzer import ResponseAnalyzer
-
+import yaml
 from telethon.tl.functions.channels import GetParticipantRequest
 from telethon.errors import UserNotParticipantError
+from pathlib import Path
 
+BASE_DIR= Path(__file__).parent.parent
 
 class LevelProcessor:
     """Process users at each level and manage transitions"""
@@ -83,18 +86,24 @@ class LevelProcessor:
         
         for user in users:
             response = await self._get_latest_message(user['user_id'])
+            print(f"User {user['user_id']} response at level 3: '{response}'")
             
             if response:
-                status = self.analyzer.analyze_response(response, level='level_3')
-                self.user_manager.update_user_response(user['user_id'], response, status)
+                ai_response = self.analyzer.give_response(response, level='level_3')
+                print(f"AI analysis for user {user['user_id']} at level 3: '{ai_response}'")
+                CONFIG_PATH = BASE_DIR / "config" / "level_messages.yaml"
+                with open(CONFIG_PATH, "r") as f:
+                        data = yaml.safe_load(f)
                 
-                if status == "yes":
-                    self.user_manager.update_user_level(user['user_id'], 3)
-                    stats['promoted'] += 1
-                elif status == "no":
-                    stats['declined'] += 1
-                elif status == "unclear":
-                    stats['unclear'] += 1
+                data['levels']['level_4'] = ai_response
+
+                with open(CONFIG_PATH, "w") as f:
+                        yaml.safe_dump(data, f)
+                
+                self.user_manager.update_user_response(user['user_id'], response, "yes")
+
+                self.user_manager.update_user_level(user['user_id'], 3)
+
             else:
                 stats['no_response'] += 1
             
@@ -129,7 +138,8 @@ class LevelProcessor:
                         days_passed = (datetime.now(timezone.utc) - msg_date).days
                         
                         if days_passed >= 1:
-                            message = "While applying the job updates try to contact me if possible I will provide the referral through my contact"
+                            # message = "While applying the job updates try to contact me if possible I will provide the referral through my contact"
+                            message = self.config['levels']['level_5']['messages']
                             if await self.conv_handler._send_dm(user['user_id'], message):
                                 self.user_manager.update_user_level(user['user_id'], 5)
                                 stats['sent_l5'] += 1
@@ -170,7 +180,7 @@ class LevelProcessor:
             
             # Return concatenated user responses
             if user_messages:
-                return " ".join(user_messages)
+                return " ".join(reversed(user_messages))
             return ""
             
         except Exception as e:

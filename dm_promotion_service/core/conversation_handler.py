@@ -42,35 +42,40 @@ class ConversationHandler:
         self.logger.info(f"Level 0: {stats['sent']} sent, {stats['failed']} failed")
         return stats
     
-    async def send_level_2_messages(self) -> Dict[str, int]:
+    async def send_level_4_messages(self) -> Dict[str, int]:
         """Send email offer to level 1 users (affirmative response)"""
+        stats = {"sent": 0, "failed": 0}
+        
+        users = self.user_manager.get_users_by_level(3)
+        config_path = Path(__file__).parent.parent / "config" / "level_messages.yaml"
+        with open(config_path, "r") as f:
+            self.config = yaml.safe_load(f)
+        message = self.config['levels']['level_4']['messages']
+
+
+
+        
+        for user in users:
+          
+            if await self._send_dm(user['user_id'], message):
+                stats['sent'] += 1
+            else:
+                stats['failed'] += 1
+
+        
+            self.user_manager.update_user_level(user['user_id'], 4)
+            await asyncio.sleep(1)
+        
+        self.logger.info(f"Level 4: {stats['sent']} sent, {stats['failed']} failed")
+        return stats
+    
+    async def send_level_2_messages(self) -> Dict[str, int]:
+        """Send emails, tips and channel link to level 3 users"""
         stats = {"sent": 0, "failed": 0}
         
         users = self.user_manager.get_users_by_level(1)
         
         messages = self.config['levels']['level_2']['messages']
-        
-        for user in users:
-            for msg in messages:
-                if await self._send_dm(user['user_id'], msg):
-                    stats['sent'] += 1
-                else:
-                    stats['failed'] += 1
-                await asyncio.sleep(0.5)
-            
-            self.user_manager.update_user_level(user['user_id'], 2)
-            await asyncio.sleep(1)
-        
-        self.logger.info(f"Level 2: {stats['sent']} sent, {stats['failed']} failed")
-        return stats
-    
-    async def send_level_4_messages(self) -> Dict[str, int]:
-        """Send emails, tips and channel link to level 3 users"""
-        stats = {"sent": 0, "failed": 0}
-        
-        users = self.user_manager.get_users_by_level(3)
-        
-        messages = self.config['levels']['level_4']['messages']
         ct=13
         for user in users:
             for msg in messages:
@@ -87,12 +92,12 @@ class ConversationHandler:
                 
                 await asyncio.sleep(0.5)
             
-            self.user_manager.update_user_level(user['user_id'], 4)
+            self.user_manager.update_user_level(user['user_id'], 2)
 
             await asyncio.sleep(ct)
             ct-=3
         
-        self.logger.info(f"Level 4: {stats['sent']} sent, {stats['failed']} failed")
+        self.logger.info(f"Level 2: {stats['sent']} sent, {stats['failed']} failed")
         return stats
     
     async def send_level_5_messages(self) -> Dict[str, int]:

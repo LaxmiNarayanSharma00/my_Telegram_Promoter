@@ -11,6 +11,7 @@ class ResponseAnalyzer:
         self.logger = logging.getLogger(__name__)
         
         config_path = Path(__file__).parent.parent / "config" / "level_messages.yaml"
+        print(f"Loading response analyzer config from: {config_path}")
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
     
@@ -21,6 +22,7 @@ class ResponseAnalyzer:
             
             response = generate(prompt=prompt, max_output_tokens=10)
             response = response.strip().lower()
+
             
             return "yes" in response
             
@@ -29,6 +31,58 @@ class ResponseAnalyzer:
             return False
     
     def analyze_response(self, response_text: str, level: str = None) -> str:
+        """Analyze response: returns 'yes', 'no', or 'unclear'. Uses per-level prompts when available."""
+        try:
+            print(f"Analyzing response: '{response_text}' for level: {level}")
+            if not response_text:
+                print("No response text provided, returning 'unclear'")
+                return "unclear"
+
+            # Choose prompt: per-level prompt if available, otherwise generic
+            prompt_template = None
+            if level:
+                prompt_template = self.config.get('response_prompts', {}).get(level)
+
+            if prompt_template:
+                prompt = prompt_template.format(message=response_text.strip())
+
+            else:
+                prompt = (
+                    "You are a classifier. Determine if the user's reply  is an affirmative or negative. Reply with only one word: yes, or no,.\n\n"
+                    "User reply: \"" + response_text.strip() + "\""
+                )
+
+            try:
+                ai_response = generate(prompt=prompt, max_output_tokens=10)
+                ai_response = ai_response.strip().lower()
+                print(prompt)
+                print(f"AI response: '{ai_response}'")
+                if ai_response.startswith("yes") or "yes" in ai_response:
+                    return "yes"
+                if ai_response.startswith("no") or "no" in ai_response:
+                    return "no"
+                return "unclear"
+            except Exception as e:
+                # Fallback to lightweight keyword matching if AI call fails
+                self.logger.warning(f"AI analyze_response failed, falling back to keywords: {e}")
+
+                text = response_text.strip().lower()
+                yes_keywords = ['yes', 'yeah', 'yep', 'yup', 'ok', 'okay', 'sure', 'pls', 'please', 'fine', 'alright']
+                no_keywords = ['no', 'nope', 'nah', "can't", 'cannot', 'not interested', 'busy']
+
+                for keyword in yes_keywords:
+                    if keyword in text:
+                        return "yes"
+                for keyword in no_keywords:
+                    if keyword in text:
+                        return "no"
+                return "unclear"
+
+        except Exception as e:
+            self.logger.error(f"Error analyzing response: {e}")
+            return "unclear"
+        
+    def give_response(self, response_text: str, level: str = None) -> str:
         """Analyze response: returns 'yes', 'no', or 'unclear'. Uses per-level prompts when available."""
         try:
             if not response_text:
@@ -52,25 +106,11 @@ class ResponseAnalyzer:
                 ai_response = generate(prompt=prompt, max_output_tokens=10)
                 ai_response = ai_response.strip().lower()
 
-                if ai_response.startswith("yes") or "yes" in ai_response:
-                    return "yes"
-                if ai_response.startswith("no") or "no" in ai_response:
-                    return "no"
-                return "unclear"
+                return ai_response
             except Exception as e:
                 # Fallback to lightweight keyword matching if AI call fails
                 self.logger.warning(f"AI analyze_response failed, falling back to keywords: {e}")
 
-                text = response_text.strip().lower()
-                yes_keywords = ['yes', 'yeah', 'yep', 'yup', 'ok', 'okay', 'sure', 'pls', 'please', 'fine', 'alright']
-                no_keywords = ['no', 'nope', 'nah', "can't", 'cannot', 'not interested', 'busy']
-
-                for keyword in yes_keywords:
-                    if keyword in text:
-                        return "yes"
-                for keyword in no_keywords:
-                    if keyword in text:
-                        return "no"
                 return "unclear"
 
         except Exception as e:
