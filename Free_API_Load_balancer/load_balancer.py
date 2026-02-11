@@ -47,6 +47,14 @@ class LoadBalancer:
                 pass  # Skip if Last_Reset is invalid; will be set on next update
 
     def start(self, text: str, max_output_tokens: int):
+
+
+        data=self.get_next_endpoint(text, max_output_tokens)
+        if data is None:
+                raise Exception("No available API endpoint meets the criteria.")
+        platform_name=data['Platform']
+        user_email=data['User_ID']
+        model=data['Model']
                 # Try env variable first (GitHub Actions)
         env_key_name = self.config['users'][user_email][platform_name].get('env_key')
 
@@ -57,22 +65,6 @@ class LoadBalancer:
         if not api_key:
             api_key = self.config['users'][user_email][platform_name]['api_keys'][0]['key']
 
-
-        data=self.get_next_endpoint(text, max_output_tokens)
-        if data is None:
-                raise Exception("No available API endpoint meets the criteria.")
-        platform_name=data['Platform']
-        user_email=data['User_ID']
-        model=data['Model']
-        
-        env_key_name = self.config['users'][user_email][platform_name].get('env_key')
-
-        if env_key_name:
-            api_key = os.getenv(env_key_name)
-
-        # Fallback to YAML (local development)
-        if not api_key:
-            api_key = self.config['users'][user_email][platform_name]['api_keys'][0]['key']
 
         provider_class=ProviderRegistry.get(platform_name)
         provider_instance=provider_class(api_key=api_key,model=model)
