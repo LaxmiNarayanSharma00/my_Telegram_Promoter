@@ -5,19 +5,17 @@ extraction:
     # - username: "@codechef_answers"
     #   name: "My Promotions"
 
-    - username: "@my_promotions"
-      name: "My Promotions"
+    # - username: "@my_promotions"
+    #   name: "My Promotions"
 
-      username: "@leetcode_answers"
+    - username: "@leetcode_answers"
       name: "LeetCode Answers"
 
-      username: "@cognizant_exam_discussion_group"
-      name: "Cognizant Exam Discussion Group"
- 
+
 
  
 
 dm_limits:
-  max_per_day: 1
+  max_per_day: 3
 
 promotion_channel: "Jobs_Lelo"

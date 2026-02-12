@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from typing import List, Dict
 from .user_manager import UserManager
 from .response_analyzer import ResponseAnalyzer
+from telethon.errors import RPCError
 
 
 class ConversationHandler:
@@ -29,6 +30,14 @@ class ConversationHandler:
         
         message = self.config['levels']['level_0']['message']
         
+        client = self.client_manager.get_client()
+        # try to pre-warm entity cache to reduce get_input_entity failures
+        try:
+            if client is not None:
+                await client.get_dialogs()
+        except Exception:
+            pass
+
         for user in users:
             if await self._send_dm(user['user_id'], message):
                 self.user_manager.update_user_level(user['user_id'], 0)
@@ -46,7 +55,14 @@ class ConversationHandler:
         stats = {"sent": 0, "failed": 0}
         
         users = self.user_manager.get_users_by_level(3)
-        
+
+        client = self.client_manager.get_client()
+        try:
+            if client is not None:
+                await client.get_dialogs()
+        except Exception:
+            pass
+
         for user in users:
             # Get the AI-generated response from level 3
             ai_response = user.get('level_3_ai_response')
@@ -71,6 +87,13 @@ class ConversationHandler:
         stats = {"sent": 0, "failed": 0}
         
         users = self.user_manager.get_users_by_level(1)
+
+        client = self.client_manager.get_client()
+        try:
+            if client is not None:
+                await client.get_dialogs()
+        except Exception:
+            pass
         
         messages = self.config['levels']['level_2']['messages']
         ct = 13
@@ -103,15 +126,49 @@ class ConversationHandler:
             raise RuntimeError("Telegram client not initialized")
 
         try:
-            # Resolve entity (fetch from Telegram if not cached)
+            # Prefer cached input entity (no network when possible)
             try:
                 entity = await client.get_input_entity(user_id)
             except ValueError:
-                entity = await client.get_entity(user_id)
+                # Not in cache: try to lookup using stored username first
+                entity = None
+                user = self.user_manager.get_user(user_id)
+                username = user.get('username') if user else None
+
+                if username:
+                    try:
+                        entity = await client.get_entity(username)
+                    except Exception:
+                        entity = None
+
+                # Last resort: try to populate cache (dialogs) and retry
+                if entity is None:
+                    try:
+                        await client.get_dialogs()
+                        entity = await client.get_input_entity(user_id)
+                    except Exception:
+                        entity = None
+
+            if entity is None:
+                # Mark user as unreachable in sheet and skip
+                try:
+                    self.user_manager.update_user_response(user_id, '', 'unreachable')
+                except Exception:
+                    pass
+                self.logger.warning(f"Failed to resolve entity for {user_id}")
+                return False
 
             await client.send_message(entity, message)
             self.logger.info(f"Sent DM to {user_id}: {message[:50]}...")
             return True
+        except RPCError as e:
+            # Telethon RPC errors (privacy, peer invalid, flood, etc.)
+            self.logger.warning(f"Telethon RPC error sending DM to {user_id}: {e}")
+            try:
+                self.user_manager.update_user_response(user_id, '', 'unreachable')
+            except Exception:
+                pass
+            return False
         except Exception as e:
             self.logger.warning(f"Failed to send DM to {user_id}: {e}")
             return False
