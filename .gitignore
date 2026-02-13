@@ -1,5 +1,6 @@
 /.venv
 /telegram_bot_module/session.session
+/telegram_bot_module/config_promotion.yaml
 session.b64
 .env
 telegram_bot.log
