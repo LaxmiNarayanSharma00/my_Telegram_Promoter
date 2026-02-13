@@ -22,7 +22,7 @@ class TrustBuilder:
         try:
             # Fetch recent messages
             messages = []
-            async for msg in client.iter_messages(entity, limit=20, reverse=True):
+            async for msg in client.iter_messages(entity, limit=20, reverse=False):
                 if msg.text and not msg.from_scheduled:
                     messages.append(msg)
             
@@ -64,7 +64,7 @@ class TrustBuilder:
         try:
             # Fetch recent messages
             messages = []
-            async for msg in client.iter_messages(entity, limit=20, reverse=True):
+            async for msg in client.iter_messages(entity, limit=20, reverse=False):
                 if msg.text and not msg.from_scheduled and msg.sender_id:
                     messages.append(msg)
             
