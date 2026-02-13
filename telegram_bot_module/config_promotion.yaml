@@ -1,7 +1,7 @@
 # Telegram API Credentials
 telegram:
-  api_id: 35536203
-  api_hash: "faf6bdee9795fc9de247c51a0fad942c"
+  api_id: 33754655
+  api_hash: "38442cbb936483d9e22f07d1069f6b98"
   session_name: "session"
 
 messages:

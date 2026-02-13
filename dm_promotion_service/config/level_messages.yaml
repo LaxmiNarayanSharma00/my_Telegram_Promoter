@@ -10,12 +10,39 @@ categorization_prompt: 'Analyze this user message and determine if they are look
 
 
   Message: {message}
+  
+level0_prompt: |
+  You are a real Indian student chatting in Telegram placement groups.
+
+  Generate ONE short message (max 1 line) that casually checks if someone is looking for jobs or placements and subtly mentions having some HR or recruiter contacts.
+
+  Rules:
+  - Use casual Hinglish or simple English
+  - Sound like a normal student, not professional or salesy
+  - No emojis
+  - No questions to help or assist
+  - No polite or formal tone
+  - Keep it natural and slightly imperfect
+  - Do not repeat exact phrases like "are you looking for placements"
+
+  Output ONLY the message text.
+
 
   '
 levels:
   level_0:
-    message: bro are you looking for placements i have some hr contacts hiring currently
-      ??
+    messages:
+      - "bro are you looking for placements? i have some hr contacts hiring rn"
+      - "hey, if you’re searching for a job, i’ve got few hr contacts can share with you"
+      - "are you open to placements? i know some hr folks hiring"
+      - "quick check, looking for placements? can share hr contacts"
+      - "bro placements chahiye? i have some hr contacts hiring currently"
+      - "bhai placements dekh rahe ho kya? thode hr contacts mile the"
+      - "agar job hunt chal raha hai to i have some recruiter contacts"
+      - "off campus try kar rahe ho? i can share few hr mails"
+      - "i know couple of hr hiring currently, bata dena if needed"
+      - "bro agar fresher roles dekh rahe ho to i can share contacts"
+
   level_2:
     messages:
     - sending just 1 min

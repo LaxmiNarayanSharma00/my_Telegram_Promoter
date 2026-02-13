@@ -7,7 +7,7 @@ from typing import List, Dict
 from .user_manager import UserManager
 from .response_analyzer import ResponseAnalyzer
 from telethon.errors import RPCError
-
+import random
 
 class ConversationHandler:
     """Handle DM conversations with users"""
@@ -28,7 +28,8 @@ class ConversationHandler:
         users = self.user_manager.get_users_by_level(-1)
         users = users[:max_count]
         
-        message = self.config['levels']['level_0']['message']
+        # message = self.config['levels']['level_0']['message']
+        message = random.choice(self.config['levels']['level_0']['messages'])
         
         client = self.client_manager.get_client()
         # try to pre-warm entity cache to reduce get_input_entity failures
@@ -45,7 +46,7 @@ class ConversationHandler:
             else:
                 stats['failed'] += 1
             
-            await asyncio.sleep(1)
+            await asyncio.sleep(random.randint(10, 20))
         
         self.logger.info(f"Level 0: {stats['sent']} sent, {stats['failed']} failed")
         return stats

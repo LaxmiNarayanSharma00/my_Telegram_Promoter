@@ -1,7 +1,7 @@
 # Telegram API Credentials
 telegram:
-  api_id: 39367448
-  api_hash: "4b9a7be7ded2eb99822fa7eef2f935c9"
+  api_id: 33754655
+  api_hash: "38442cbb936483d9e22f07d1069f6b98"
   session_name: "session"
 
 # Source Groups/Channels to fetch posts from

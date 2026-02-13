@@ -5,7 +5,7 @@ from .config_manager import ConfigManager
 from .telegram_client import TelegramClientManager
 from .post_fetcher import PostFetcher
 from .post_distributor import PostDistributor
-from .post_distributer_channels import PostDistributorChannels
+# from .post_distributer_channels import PostDistributorChannels
 from .ai_service import AIService
 from dm_promotion_service import DMPromotionService
 from group_promotion_service import GroupPromotionService
@@ -34,7 +34,7 @@ class TelegramBot:
         
         self.fetcher = PostFetcher(self.client_mgr, self.config)
         self.distributor = PostDistributor(self.client_mgr, self.config)
-        self.distributor_channels = PostDistributorChannels(self.client_mgr)
+        # self.distributor_channels = PostDistributorChannels(self.client_mgr)
         self.ai_service = AIService()
         self.dm_promotion_service = DMPromotionService(self.client_mgr)
         self.group_promotion_service = GroupPromotionService(self.client_mgr)
@@ -77,8 +77,9 @@ class TelegramBot:
             # else:
             #     self.logger.info("No posts to distribute")
             
-            # await self.dm_promotion_service.run()
+            await self.dm_promotion_service.run()
             await self.group_promotion_service.run()
+
             
             return True
         finally:

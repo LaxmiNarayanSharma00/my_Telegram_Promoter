@@ -34,7 +34,7 @@ class GroupExtractor:
         #     self.config['extraction']['frequency_days']
         # )
         no_of_users_added_today = self.user_manager.get_no_of_users_by_current_date_as_first_added_date()
-        max_additions = max(0,4-no_of_users_added_today)  # Ensure we don't add more than the daily limit
+        max_additions = max(0,1-no_of_users_added_today)  # Ensure we don't add more than the daily limit
 
         client = self.client_manager.get_client()
         if client is None:
